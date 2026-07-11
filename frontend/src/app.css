@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: theme("fontFamily.sans");
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--accent-soft);
+  }
+  code {
+    font-family: theme("fontFamily.mono");
+  }
+}
+
+@layer components {
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[0.72rem] font-semibold font-mono tracking-tight;
+  }
+  .pill-ok {
+    @apply bg-ok-bg text-ok;
+  }
+  .pill-err {
+    @apply bg-err-bg text-err;
+  }
+  .pill-warn {
+    @apply bg-warn-bg text-warn;
+  }
+  .pill-neutral {
+    @apply bg-code text-ink-soft;
+  }
+
+  .chip {
+    @apply rounded-md bg-code px-1.5 py-0.5 font-mono text-[0.82rem];
+  }
+
+  .btn {
+    @apply rounded-lg px-[1.15rem] py-[0.7rem] text-[0.88rem] font-semibold whitespace-nowrap
+      transition-[filter,transform] duration-150 focus-visible:outline focus-visible:outline-2
+      focus-visible:outline-offset-2 focus-visible:outline-accent active:translate-y-px;
+  }
+  .btn-primary {
+    @apply bg-accent text-accent-ink hover:brightness-110;
+  }
+  .btn-secondary {
+    @apply border border-line bg-transparent text-ink-soft hover:border-ink-faint hover:text-ink;
+  }
+
+  .panel {
+    @apply mb-6 overflow-hidden rounded-xl2 border border-line bg-panel shadow-panel;
+  }
+  .panel-locked {
+    @apply opacity-50 shadow-none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
