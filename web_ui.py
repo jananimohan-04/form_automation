@@ -255,5 +255,32 @@ def serve_frontend(path):
     return send_from_directory(FRONTEND_DIST, "index.html")
 
 
+def _find_open_port(preferred, attempts=20):
+    """Return the first bindable port at/after `preferred`.
+
+    Windows can hold a just-closed socket in TIME_WAIT/CLOSE_WAIT for a while,
+    which makes re-binding the same port right after a restart fail. Rather
+    than force the user to pick a new port by hand each time, walk forward to
+    the next free one automatically. Override with the PORT env var.
+    """
+    import socket
+
+    env_port = os.environ.get("PORT")
+    if env_port:
+        return int(env_port)
+
+    for candidate in range(preferred, preferred + attempts):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            try:
+                sock.bind(("127.0.0.1", candidate))
+                return candidate
+            except OSError:
+                continue
+    return preferred  # let app.run surface the error if nothing was free
+
+
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=False, threaded=True, port=5175)
+    port = _find_open_port(5175)
+    print(f"\n  >>  Open the app at:  http://127.0.0.1:{port}\n", flush=True)
+    app.run(debug=True, use_reloader=False, threaded=True, port=port)
